@@ -13,7 +13,7 @@
  * @file
  * @brief       Example for demonstrating SAUL and the SAUL registry
  *
- * @author      Hauke Petersen <hauke.petersen@fu-berlin.de>
+ * @author      Der ich
  *
  * @}
  */
@@ -21,14 +21,48 @@
 #include <stdio.h>
 
 #include "shell.h"
+#include "saul.h" // SAUL_SENSE_TEMP == TYPE
+
+int sensorTempFunction(void);
 
 int main(void)
 {
-    puts("Welcome to RIOT!\n");
-    puts("Type `help` for help, type `saul` to see all SAUL devices\n");
 
-    char line_buf[SHELL_DEFAULT_BUFSIZE];
-    shell_run(NULL, line_buf, SHELL_DEFAULT_BUFSIZE);
+	
 
-    return 0;
+	int returnOfsensorTempFunction = 0;
+
+	
+
+
+	/*Getting Request*/	
+	
+	sensorTempFunction();
+
+	/* STARTEN DER SHELL */
+	char line_buf[SHELL_DEFAULT_BUFSIZE];
+	shell_run(NULL, line_buf, SHELL_DEFAULT_BUFSIZE);
+
+
+	return 0;
+}
+
+sensorTempFunction() {
+	
+	saul_reg_t* prt2Sensor = NULL;
+	phydat_t valueOfSensor;
+	int returnOfSensor = 0;
+
+	prt2Sensor = saul_reg_find_type (SAUL_SENSE_TEMP);// TYPE
+	/* nach Typ fragen und dann mit der ID weiter arbeiten!*/
+	
+	returnOfSensor = saul_reg_read ( prt2Sensor, &valueOfSensor );	
+	
+	if(returnOfSensor != 0){
+		return 1;		
+	}
+	else{
+		printf("%d", valueOfSensor.val[0]);
+	}
+	return 0;
 }
